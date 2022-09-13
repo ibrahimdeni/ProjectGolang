@@ -1,0 +1,2 @@
+1. register = done
+2. login = done

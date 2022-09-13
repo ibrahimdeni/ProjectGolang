@@ -84,10 +84,11 @@ func (h *handlerFilm) CreateFilm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	film := models.Film{
-		Title:         request.Title,
-		Thumbnailfilm: request.Thumbnailfilm,
-		Year:          request.Year,
-		Description:   request.Description,
+		Title			: request.Title,
+		Thumbnailfilm	: request.Thumbnailfilm,
+		Year			: request.Year,
+		Description		: request.Description,
+		CategoryID		: request.CategoryID,
 		// UserID:		   userId,
 	}
 	data, err := h.FilmRepository.CreateFilm(film)

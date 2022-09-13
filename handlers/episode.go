@@ -79,6 +79,7 @@ func (h *handlerEpisode) CreateEpisode(w http.ResponseWriter, r *http.Request) {
 		Title			: request.Title,
 		Thumbnailfilm	: request.Thumbnailfilm,
 		Linkfilm		: request.Linkfilm,
+		FilmID			: request.FilmID,
 	}
 	data, err := h.EpisodeRepository.CreateEpisode(episode)
 	if err != nil {

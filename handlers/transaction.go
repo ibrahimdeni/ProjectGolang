@@ -77,6 +77,9 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 
 		Stardate: request.Stardate,
 		Duedate:  request.Duedate,
+		Attache: request.Attache,
+		Status: request.Status,
+		UserID: request.UserID,
 	}
 	data, err := h.TransactionRepository.CreateTransaction(transaction)
 	if err != nil {

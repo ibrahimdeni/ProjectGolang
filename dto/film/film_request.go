@@ -6,4 +6,5 @@ type FilmRequest struct {
 	Thumbnailfilm string `json:"thumbnailfilm" gorm:"type: varchar(255)"`
 	Year          string `json:"year" form:"year" gorm:"type: text" validate:"required" `
 	Description   string `json:"description" gorm:"type: varchar(255)"`
+	CategoryID    int    `json:"category_id"`
 }
