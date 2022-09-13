@@ -4,8 +4,6 @@ import (
 	filmdto "dumbflix/dto/film"
 	dto "dumbflix/dto/result"
 
-	// "fmt"
-
 	"dumbflix/models"
 	"dumbflix/repositories"
 	"encoding/json"
@@ -13,7 +11,6 @@ import (
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
-	// "github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -149,6 +146,7 @@ func (h *handlerFilm) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseFilm(data)}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerFilm) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

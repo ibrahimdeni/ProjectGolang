@@ -8,4 +8,5 @@ type TransactionRequest struct {
 	Duedate  time.Time `json:"updated_at"`
 	Attache   string    `json:"attach" gorm:"type: text"`
 	Status   string    `json:"status" gorm:"type: text"`
+	UserID   int       `json:"user_id" gorm:"type: int"`
 }

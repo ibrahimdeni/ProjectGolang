@@ -54,6 +54,7 @@ func (h *handlerEpisode) GetEpisode(w http.ResponseWriter, r *http.Request) {
 	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseEpisode(episode)}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerEpisode) CreateEpisode(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -75,9 +76,9 @@ func (h *handlerEpisode) CreateEpisode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	episode := models.Episode{
-		Title:         request.Title,
-		Thumbnailfilm: request.Thumbnailfilm,
-		Linkfilm:      request.Linkfilm,
+		Title			: request.Title,
+		Thumbnailfilm	: request.Thumbnailfilm,
+		Linkfilm		: request.Linkfilm,
 	}
 	data, err := h.EpisodeRepository.CreateEpisode(episode)
 	if err != nil {
@@ -132,6 +133,7 @@ func (h *handlerEpisode) UpdateEpisode(w http.ResponseWriter, r *http.Request) {
 	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseEpisode(data)}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerEpisode) DeleteEpisode(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -159,9 +161,9 @@ func (h *handlerEpisode) DeleteEpisode(w http.ResponseWriter, r *http.Request) {
 
 func convertResponseEpisode(u models.Episode) episodedto.EpisodeResponse {
 	return episodedto.EpisodeResponse{
-		ID:            u.ID,
-		Title:         u.Title,
-		Thumbnailfilm: u.Thumbnailfilm,
-		Linkfilm:      u.Linkfilm,
+		ID				: u.ID,
+		Title			: u.Title,
+		Thumbnailfilm	: u.Thumbnailfilm,
+		Linkfilm		: u.Linkfilm,
 	}
 }

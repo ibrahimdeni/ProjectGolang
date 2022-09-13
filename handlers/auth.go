@@ -54,9 +54,12 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
   }
 
   user := models.User{
-    Fullname: request.Fullname,
-    Email	: request.Email,
-    Password: password,
+    Fullname	: request.Fullname,
+    Email		: request.Email,
+    Password	: password,
+	Gender		: request.Gender,
+	Phone		: request.Phone,
+	Address		: request.Address,
   }
 
   data, err := h.AuthRepository.Register(user)
@@ -109,8 +112,9 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 
   //generate token
   claims := jwt.MapClaims{}
-  claims["id"] = user.ID
-  claims["exp"] = time.Now().Add(time.Hour * 2).Unix() // 2 hours expired
+  claims["id"]		= user.ID
+  claims["email"]	= user.Email
+  claims["exp"]		= time.Now().Add(time.Hour * 2).Unix() // 2 hours expired
 
   token, errGenerateToken := jwtToken.GenerateToken(&claims)
   if errGenerateToken != nil {
@@ -120,10 +124,10 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
   }
 
   loginResponse := authdto.LoginResponse{
-    Name:     user.Fullname,
-    Email:    user.Email,
-    Password: user.Password,
-    Token:    token,
+	ID			: user.ID,
+    Fullname	: user.Fullname,
+    Email		: user.Email,
+    Token		: token,
   }
 
   w.Header().Set("Content-Type", "application/json")

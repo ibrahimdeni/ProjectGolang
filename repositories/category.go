@@ -7,18 +7,18 @@ import (
 )
 
 type CategoryRepository interface {
-	FindCategorys() ([]models.Category, error)
+	FindCategories() ([]models.Category, error)
 	GetCategory(ID int) (models.Category, error)
 	CreateCategory(film models.Category) (models.Category, error)
-	UpdateFi(film models.Category) (models.Category, error)
-	DeleteFilm(film models.Category) (models.Category, error)
+	UpdateCategory(film models.Category) (models.Category, error)
+	DeleteCategory(film models.Category) (models.Category, error)
 }
 
 func RepositoryCategory(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) FindCategorys() ([]models.Category, error) {
+func (r *repository) FindCategories() ([]models.Category, error) {
 	var films []models.Category
 	err := r.db.Find(&films).Error // add this code
 
