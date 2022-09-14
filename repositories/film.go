@@ -32,7 +32,7 @@ func (r *repository) GetFilm(ID int) (models.Film, error) {
 	return film, err
 }
 func (r *repository) CreateFilm(film models.Film) (models.Film, error) {
-	err := r.db.Create(&film).Error
+	err := r.db.Preload("Category").Create(&film).Error
 
 	return film, err
 }

@@ -40,8 +40,8 @@ func (h *handlerTransaction) GetTransaction(w http.ResponseWriter, r *http.Reque
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
-	var transaction models.Transaction
-	transaction, err := h.TransactionRepository.GetTransaction(id)
+	var transactions models.Transaction
+	transactions, err := h.TransactionRepository.GetTransaction(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
@@ -50,7 +50,7 @@ func (h *handlerTransaction) GetTransaction(w http.ResponseWriter, r *http.Reque
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseTransaction(transaction)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: transactions}
 	json.NewEncoder(w).Encode(response)
 }
 func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Request) {
@@ -114,6 +114,9 @@ func (h *handlerTransaction) UpdateTransaction(w http.ResponseWriter, r *http.Re
 
 	if request.Status != "" {
 		transaction.Status = request.Status
+	}
+	if request.Attache != "" {
+		transaction.Attache = request.Attache
 	}
 
 	data, err := h.TransactionRepository.UpdateTransaction(transaction)

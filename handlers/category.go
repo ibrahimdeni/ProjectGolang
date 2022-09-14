@@ -81,7 +81,6 @@ func (h *handlerCategory) CreateCategory(w http.ResponseWriter, r *http.Request)
 	}
 
 	category := models.Category{
-
 		Name: request.Name,
 	}
 

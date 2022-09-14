@@ -41,8 +41,8 @@ func (h *handlerEpisode) GetEpisode(w http.ResponseWriter, r *http.Request) {
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
-	var episode models.Episode
-	episode, err := h.EpisodeRepository.GetEpisode(id)
+	var episodes models.Episode
+	episodes, err := h.EpisodeRepository.GetEpisode(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
@@ -51,7 +51,7 @@ func (h *handlerEpisode) GetEpisode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseEpisode(episode)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: episodes}
 	json.NewEncoder(w).Encode(response)
 }
 
