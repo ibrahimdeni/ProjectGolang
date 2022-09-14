@@ -74,7 +74,7 @@ func (h *handlerEpisode) CreateEpisode(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-
+ 
 	episode := models.Episode{
 		Title			: request.Title,
 		Thumbnailfilm	: request.Thumbnailfilm,

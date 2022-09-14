@@ -41,8 +41,8 @@ func (h *handlerFilm) GetFilm(w http.ResponseWriter, r *http.Request) {
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
-	var film models.Film
-	film, err := h.FilmRepository.GetFilm(id)
+	var films models.Film
+	films, err := h.FilmRepository.GetFilm(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
@@ -51,7 +51,7 @@ func (h *handlerFilm) GetFilm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseFilm(film)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: films}
 	json.NewEncoder(w).Encode(response)
 }
 func (h *handlerFilm) CreateFilm(w http.ResponseWriter, r *http.Request) {
