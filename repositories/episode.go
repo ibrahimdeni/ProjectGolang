@@ -38,14 +38,14 @@ func (r *repository) CreateEpisode(episode models.Episode) (models.Episode, erro
 }
 
 func (r *repository) UpdateEpisode(episode models.Episode) (models.Episode, error) {
-	err := r.db.Save(&episode).Error
+	err := r.db.Preload("Film").Preload("Film.Category").Save(&episode).Error
 
 	return episode, err
 }
 
 func (r *repository) DeleteEpisode(episode models.Episode) (models.Episode, error) {
 
-	err := r.db.Delete(&episode).Error
+	err := r.db.Preload("Film").Preload("Film.Category").Delete(&episode).Error
 
 	return episode, err
 }
