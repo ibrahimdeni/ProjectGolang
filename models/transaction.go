@@ -1,11 +1,11 @@
 package models
 
-import "time"
+// import "time"
 
 type Transaction struct {
 	ID       int       `json:"id" gorm:"primary_key:auto_increment"`
-	Stardate time.Time `json:"created_at"`
-	Duedate  time.Time `json:"updated_at"`
+	Stardate string `json:"startdate"`
+	Duedate  string `json:"duedate"`
 	Attache  string    `json:"attach" gorm:"type: text"`
 	Status   string    `json:"status" gorm:"type: text"`
 	User	 UsersProfileResponse	`json:"user"`

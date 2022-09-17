@@ -87,8 +87,8 @@ func (h *handlerFilm) CreateFilm(w http.ResponseWriter, r *http.Request) {
 		Title			: request.Title,
 		Thumbnailfilm	: request.Thumbnailfilm,
 		Year			: request.Year,
-		Description		: request.Description,
 		CategoryID		: request.CategoryID,
+		Description		: request.Description,
 		// UserID:		   userId,
 	}
 	data, err := h.FilmRepository.CreateFilm(film)
@@ -98,8 +98,10 @@ func (h *handlerFilm) CreateFilm(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 	}
 
+	film, _= h.FilmRepository.GetFilm(data.ID)
+
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseFilm(data)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseFilm(film)}
 	json.NewEncoder(w).Encode(response)
 }
 func (h *handlerFilm) UpdateFilm(w http.ResponseWriter, r *http.Request) {
@@ -178,6 +180,8 @@ func convertResponseFilm(u models.Film) filmdto.FilmResponse {
 		ID:            u.ID,
 		Title:         u.Title,
 		Thumbnailfilm: u.Thumbnailfilm,
+		Category:	u.Category,
+		// CategoryID: u.CategoryID,
 		Year:          u.Year,
 		Description:   u.Description,
 	}

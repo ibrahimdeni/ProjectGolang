@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"strconv"
 
+	// "time"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )
@@ -73,6 +75,9 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	// Stardate := time.Now()
+	// Duedate := Stardate.AddDate(0, 0, 30)
+	
 	transaction := models.Transaction{
 
 		Stardate: request.Stardate,
@@ -88,10 +93,13 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 		json.NewEncoder(w).Encode(response)
 	}
 
+	transaction, _= h.TransactionRepository.GetTransaction(data.ID)
+
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseTransaction(data)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseTransaction(transaction)}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerTransaction) UpdateTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -161,6 +169,7 @@ func convertResponseTransaction(u models.Transaction) transactiondto.Transaction
 		ID:       u.ID,
 		Stardate: u.Stardate,
 		Duedate:  u.Duedate,
+		User: u.User,
 		Attache:   u.Attache,
 		Status:   u.Status,
 	}

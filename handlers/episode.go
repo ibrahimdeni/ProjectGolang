@@ -81,6 +81,7 @@ func (h *handlerEpisode) CreateEpisode(w http.ResponseWriter, r *http.Request) {
 		Linkfilm		: request.Linkfilm,
 		FilmID			: request.FilmID,
 	}
+
 	data, err := h.EpisodeRepository.CreateEpisode(episode)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -88,10 +89,13 @@ func (h *handlerEpisode) CreateEpisode(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 	}
 
+	episode, _ = h.EpisodeRepository.GetEpisode(data.ID)
+
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseEpisode(data)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseEpisode(episode)}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerEpisode) UpdateEpisode(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -121,6 +125,7 @@ func (h *handlerEpisode) UpdateEpisode(w http.ResponseWriter, r *http.Request) {
 	if request.Linkfilm != "" {
 		episode.Linkfilm = request.Linkfilm
 	}
+
 
 	data, err := h.EpisodeRepository.UpdateEpisode(episode)
 	if err != nil {
@@ -166,5 +171,7 @@ func convertResponseEpisode(u models.Episode) episodedto.EpisodeResponse {
 		Title			: u.Title,
 		Thumbnailfilm	: u.Thumbnailfilm,
 		Linkfilm		: u.Linkfilm,
+		Film			: u.FilmID,
+		FilmID			: models.FilmResponse(u.Film),	
 	}
 }

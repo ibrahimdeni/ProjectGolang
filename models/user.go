@@ -16,6 +16,10 @@ type UsersProfileResponse struct {
 	ID			int		`json:"id"`
 	Fullname	string	`json:"fullname"`
 	Email		string	`json:"email"`
+	Gender    string `json:"gender"`
+	Phone     string `json:"phone"`
+	Address   string `json:"address"`
+	Subscribe string `json:"subscribe"`
 }
 
 func (UsersProfileResponse) TableName() string {

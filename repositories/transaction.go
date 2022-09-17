@@ -45,7 +45,7 @@ func (r *repository) UpdateTransaction(transaction models.Transaction) (models.T
 
 func (r *repository) DeleteTransaction(transaction models.Transaction) (models.Transaction, error) {
 
-	err := r.db.Delete(&transaction).Error
+	err := r.db.Preload("User").Delete(&transaction).Error
 
 	return transaction, err
 }
