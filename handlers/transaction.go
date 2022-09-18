@@ -8,11 +8,14 @@ import (
 	"dumbflix/repositories"
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
+	"time"
 
 	// "time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -37,6 +40,7 @@ func (h *handlerTransaction) FindTransacations(w http.ResponseWriter, r *http.Re
 	response := dto.SuccessResult{Code: http.StatusOK, Data: transactions}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerTransaction) GetTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -55,15 +59,20 @@ func (h *handlerTransaction) GetTransaction(w http.ResponseWriter, r *http.Reque
 	response := dto.SuccessResult{Code: http.StatusOK, Data: transactions}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	request := new(transactiondto.TransactionRequest)
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-		json.NewEncoder(w).Encode(response)
-		return
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	userId := int(userInfo["id"].(float64))
+
+	dataContex := r.Context().Value("dataFile") // add this code
+	filename := dataContex.(string)
+
+	request := transactiondto.TransactionRequest{
+		UserID:  userId,
+		Status:  r.FormValue("status"),
+		Attache: filename,
 	}
 
 	validation := validator.New()
@@ -75,14 +84,14 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	// Stardate := time.Now()
-	// Duedate := Stardate.AddDate(0, 0, 30)
+	Stardate := time.Now()
+	Duedate := Stardate.AddDate(0, 0, 30)
 	
 	transaction := models.Transaction{
 
-		Stardate: request.Stardate,
-		Duedate:  request.Duedate,
-		Attache: request.Attache,
+		Stardate: Stardate,
+		Duedate:  Duedate,
+		Attache: os.Getenv("PATH_FILE") + filename,
 		Status: request.Status,
 		UserID: request.UserID,
 	}
@@ -103,7 +112,7 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 func (h *handlerTransaction) UpdateTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	request := new(transactiondto.TransactionRequest)
+	request := new(transactiondto.UpdateTransactionRequest)
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
@@ -139,6 +148,7 @@ func (h *handlerTransaction) UpdateTransaction(w http.ResponseWriter, r *http.Re
 	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseTransaction(data)}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerTransaction) DeleteTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

@@ -10,7 +10,11 @@ import (
 	"net/http"
 	"strconv"
 
+	// "fmt"
+	"os"
+
 	"github.com/go-playground/validator/v10"
+	// "github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -31,6 +35,10 @@ func (h *handlerFilm) FindFilms(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err.Error())
 	}
 
+	for i, p := range films {
+	films[i].Thumbnailfilm = os.Getenv("PATH_FILE") + p.Thumbnailfilm
+	}
+
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: http.StatusOK, Data: films}
 	json.NewEncoder(w).Encode(response)
@@ -42,6 +50,7 @@ func (h *handlerFilm) GetFilm(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
 	var films models.Film
+
 	films, err := h.FilmRepository.GetFilm(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -50,29 +59,42 @@ func (h *handlerFilm) GetFilm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	films.Thumbnailfilm = os.Getenv("PATH_FILE") + films.Thumbnailfilm
+
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: http.StatusOK, Data: films}
 	json.NewEncoder(w).Encode(response)
 }
+
 func (h *handlerFilm) CreateFilm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	//get data user token
 	// userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
-	// userID := int(userInfo["id"].(float64))
-	// userEmail := userInfo["email"].(string)
+	// userId := int(userInfo["id"].(float64))
 
-	// fmt.Println("userEmail =====")
-	// fmt.Println(userEmail)
-	// fmt.Println("===== userEmail =====")
+	//CHECKDOANG
+	// fmt.Println(userId)
 
-	request := new(filmdto.FilmRequest)
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-		json.NewEncoder(w).Encode(response)
-		return
+	//get datafile ari middleware dan nyetor filename var disini,,
+  dataContex := r.Context().Value("dataFile") // add this code
+  filename := dataContex.(string) // add this code
+  category_id, _ := strconv.Atoi(r.FormValue("category_id"))
+
+	request := filmdto.FilmRequest{
+		Title: r.FormValue("title"),
+		Year: r.FormValue("year"),
+		CategoryID: category_id,
+		Description: r.FormValue("description"),
+		Thumbnailfilm: filename,
 	}
+
+	// request := new(filmdto.FilmRequest)
+	// if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
 
 	validation := validator.New()
 	err := validation.Struct(request)
@@ -85,12 +107,13 @@ func (h *handlerFilm) CreateFilm(w http.ResponseWriter, r *http.Request) {
 
 	film := models.Film{
 		Title			: request.Title,
-		Thumbnailfilm	: request.Thumbnailfilm,
+		Thumbnailfilm	: filename,
 		Year			: request.Year,
 		CategoryID		: request.CategoryID,
 		Description		: request.Description,
 		// UserID:		   userId,
 	}
+
 	data, err := h.FilmRepository.CreateFilm(film)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -107,7 +130,7 @@ func (h *handlerFilm) CreateFilm(w http.ResponseWriter, r *http.Request) {
 func (h *handlerFilm) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	request := new(filmdto.FilmRequest)
+	request := new(filmdto.UpdateFilmRequest)
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}

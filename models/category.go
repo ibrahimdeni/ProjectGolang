@@ -1,8 +1,9 @@
 package models
 
 type Category struct {
-	ID   int    `json:"id"`
-	Name string `json:"name" form:"name" validate:"required"`
+	ID   int              `json:"id"`
+	Name string           `json:"name" form:"name" validate:"required"`
+	Film []FilmInCategory `json:"film"`
 }
 
 type CategoryResponse struct {

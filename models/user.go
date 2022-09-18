@@ -10,6 +10,7 @@ type User struct {
 	Phone     string `json:"phone" gorm:"type: varchar(255)"`
 	Address   string `json:"address" gorm:"type: text"`
 	Subscribe string `json:"subscribe" gorm:"type:text"`
+	Transaction	[]TransactionInUser `json:"transactions"`
 }
 
 type UsersProfileResponse struct {
