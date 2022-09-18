@@ -57,10 +57,15 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
     Fullname	: request.Fullname,
     Email		: request.Email,
     Password	: password,
-	Gender		: request.Gender,
-	Phone		: request.Phone,
-	Address		: request.Address,
-	Subscribe	: "false",
+	  Gender		: request.Gender,
+	  Phone		: request.Phone,
+	  Address		: request.Address,
+	  Subscribe	: false,
+  	Role:     "Customer",
+  }
+
+  if user.Email == "ibrahimdeniharyanto@gmail.com"{
+    user.Role = "Admin"
   }
 
   data, err := h.AuthRepository.Register(user)
@@ -115,6 +120,8 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
   claims := jwt.MapClaims{}
   claims["id"]		= user.ID
   claims["email"]	= user.Email
+  claims["role"] = user.Role
+
   claims["exp"]		= time.Now().Add(time.Hour * 2).Unix() // 2 hours expired
 
   token, errGenerateToken := jwtToken.GenerateToken(&claims)
@@ -125,7 +132,7 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
   }
 
   loginResponse := authdto.LoginResponse{
-	ID			: user.ID,
+	  ID			: user.ID,
     Fullname	: user.Fullname,
     Email		: user.Email,
     Token		: token,
