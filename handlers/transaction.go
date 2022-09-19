@@ -15,7 +15,6 @@ import (
 	// "time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -63,14 +62,15 @@ func (h *handlerTransaction) GetTransaction(w http.ResponseWriter, r *http.Reque
 func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
-	userId := int(userInfo["id"].(float64))
+	// userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	// userId := int(userInfo["id"].(float64))
 
 	dataContex := r.Context().Value("dataFile") // add this code
 	filename := dataContex.(string)
 
+	user_id, _ := strconv.Atoi(r.FormValue("user_id"))
 	request := transactiondto.TransactionRequest{
-		UserID:  userId,
+		UserID:  user_id,
 		Status:  r.FormValue("status"),
 		Attache: filename,
 	}
@@ -84,12 +84,12 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	Stardate := time.Now()
-	Duedate := Stardate.AddDate(0, 0, 30)
+	Startdate := time.Now()
+	Duedate := Startdate.AddDate(0, 0, 30)
 	
 	transaction := models.Transaction{
 
-		Stardate: Stardate,
+		Startdate: Startdate,
 		Duedate:  Duedate,
 		Attache: os.Getenv("PATH_FILE") + filename,
 		Status: request.Status,
@@ -177,7 +177,7 @@ func (h *handlerTransaction) DeleteTransaction(w http.ResponseWriter, r *http.Re
 func convertResponseTransaction(u models.Transaction) transactiondto.TransactionResponse {
 	return transactiondto.TransactionResponse{
 		ID:       u.ID,
-		Stardate: u.Stardate,
+		Startdate: u.Startdate,
 		Duedate:  u.Duedate,
 		User: u.User,
 		Attache:   u.Attache,
